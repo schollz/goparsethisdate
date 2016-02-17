@@ -1,16 +1,16 @@
-package main
+package goparsethisdate
 
 import (
 	"fmt"
 	"time"
 )
 
-func parseDate(value string) time.Time {
+func ParseDate(value string) (time.Time, error) {
 	years := []string{"2006", "06", ""}
 	months := []string{"Jan", "Jan.", "January", "01", "1", ""}
 	days := []string{"Mon", "Mon.", "Monday", "2", "02", "2nd", "2st", "2rd", "2th", ""}
 	delimiters := []string{"/", " ", "", ", "}
-	timeNumsFirst := []string{"3:04pm", "15:04", "3:04:05pm", "15:04:05", ""}
+	timeNumsFirst := []string{"3:04pm", "15:04", "3:04:05pm", "15:04:05", "3pm", ""}
 	for _, year := range years {
 		for _, month := range months {
 			for _, day := range days {
@@ -22,13 +22,13 @@ func parseDate(value string) time.Time {
 								t, err := time.Parse(layout, value)
 								//fmt.Println(layout)
 								if err == nil {
-									return t
+									return t, err
 								}
-								layout =  month + delimiter1 + day + delimiter2 + year + delimiter3 + timeNumFirst
+								layout = month + delimiter1 + day + delimiter2 + year + delimiter3 + timeNumFirst
 								t, err = time.Parse(layout, value)
 								//fmt.Println(layout)
 								if err == nil {
-									return t
+									return t, err
 								}
 							}
 						}
@@ -38,14 +38,5 @@ func parseDate(value string) time.Time {
 		}
 	}
 
-	return time.Now()
-}
-
-func main() {
-	t0 := time.Now()
-	fmt.Println(parseDate("02/17/2016 3:05pm"))
-	fmt.Println(parseDate("02/17/2016, 9:01am"))
-	fmt.Println(parseDate("February 17th, 2016"))
-	fmt.Println(parseDate("Feb. 17, 2016"))
-	fmt.Printf("took %s", time.Since(t0))
+	return time.Now(), fmt.Errorf("Could not find date")
 }
