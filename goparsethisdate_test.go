@@ -48,5 +48,7 @@ func Example7() {
 }
 
 func BenchmarkParseDate(b *testing.B) {
-	ParseDate("02/17/2016 3:05pm")
+	for i := 0; i < b.N; i++ {
+		ParseDate("02/17/2016 3:05pm")
+	}
 }
